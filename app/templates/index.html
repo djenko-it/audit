@@ -35,6 +35,7 @@
     <script>
         document.getElementById('scan-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('Form submitted');
             const ip_range = document.getElementById('ip_range').value;
             const ports = document.getElementById('ports').value;
 
@@ -45,8 +46,12 @@
                 },
                 body: JSON.stringify({ ip_range, ports })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response received');
+                return response.json();
+            })
             .then(data => {
+                console.log('Data:', data);
                 let resultsDiv = document.getElementById('results');
                 resultsDiv.innerHTML = '';
                 data.forEach(host => {
@@ -64,6 +69,9 @@
                     `;
                     resultsDiv.appendChild(hostDiv);
                 });
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         });
     </script>
