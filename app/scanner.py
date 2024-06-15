@@ -1,8 +1,18 @@
 import nmap
 
-def scan_network(ip_range, ports):
+def scan_network(ip_range, ports, scan_type):
     nm = nmap.PortScanner()
-    nm.scan(ip_range, ports, arguments='-O')
+
+    if scan_type == 'quick':
+        arguments = '-T4 -F'
+    elif scan_type == 'full':
+        arguments = '-T4 -A -v'
+    elif scan_type == 'vuln':
+        arguments = '--script vuln'
+    else:
+        arguments = '-T4 -F'
+
+    nm.scan(ip_range, ports, arguments=arguments)
 
     results = []
     for host in nm.all_hosts():
@@ -10,22 +20,13 @@ def scan_network(ip_range, ports):
             'host': host,
             'hostname': nm[host].hostname(),
             'state': nm[host].state(),
-            'mac': None,
-            'vendor': None,
-            'ports': []
+            'mac': nm[host]['addresses'].get('mac'),
+            'vendor': nm[host]['vendor'],
+            'ports': [
+                {'port': port, 'state': nm[host][proto][port]['state']}
+                for proto in nm[host].all_protocols()
+                for port in nm[host][proto].keys()
+            ]
         }
-        
-        if 'mac' in nm[host]['addresses']:
-            host_info['mac'] = nm[host]['addresses']['mac']
-        if 'vendor' in nm[host]:
-            host_info['vendor'] = nm[host]['vendor']
-
-        for proto in nm[host].all_protocols():
-            lport = nm[host][proto].keys()
-            for port in lport:
-                host_info['ports'].append({
-                    'port': port,
-                    'state': nm[host][proto][port]['state']
-                })
         results.append(host_info)
     return results

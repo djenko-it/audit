@@ -9,3 +9,13 @@ services:
       - .:/app
     environment:
       FLASK_ENV: development
+      DATABASE_URL: postgresql://postgres:password@db:5432/auditdb
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auditdb
+    ports:
+      - "5432:5432"
