@@ -56,6 +56,8 @@
                         <div class="card-body">
                             <h5 class="card-title">${host.host} (${host.hostname}) - ${host.state}</h5>
                             <p class="card-text">
+                                MAC Address: ${host.mac ? host.mac : 'N/A'}<br>
+                                Vendor: ${host.vendor ? host.vendor : 'N/A'}<br>
                                 ${host.ports.map(port => `Port: ${port.port} - ${port.state}`).join('<br>')}
                             </p>
                         </div>
