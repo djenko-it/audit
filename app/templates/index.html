@@ -12,6 +12,9 @@
         .container {
             max-width: 800px;
         }
+        #loading-spinner {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +41,11 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Scanner</button>
                 </form>
+                <div id="loading-spinner" class="text-center mt-4">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Chargement...</span>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
                 <div class="mt-4">
@@ -71,6 +79,8 @@
             const ip_range = document.getElementById('ip_range').value;
             const ports = document.getElementById('ports').value;
 
+            document.getElementById('loading-spinner').style.display = 'block';
+
             fetch('/scan', {
                 method: 'POST',
                 headers: {
@@ -101,11 +111,14 @@
                     resultsTableBody.appendChild(row);
                 });
 
+                document.getElementById('loading-spinner').style.display = 'none';
+
                 // Switch to the results tab
                 $('#results-tab').tab('show');
             })
             .catch(error => {
                 console.error('Error:', error);
+                document.getElementById('loading-spinner').style.display = 'none';
             });
         });
     </script>
