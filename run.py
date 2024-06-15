@@ -1,10 +1,6 @@
-FROM python:3.9-slim
+from app import create_app
 
-WORKDIR /app
+app = create_app()
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
-COPY . .
-
-CMD ["python", "run.py"]
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
