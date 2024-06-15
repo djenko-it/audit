@@ -4,19 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audit Informatique</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Audit Informatique</h1>
-    <form id="scan-form">
-        <label for="ip_range">Plage IP:</label>
-        <input type="text" id="ip_range" name="ip_range" required>
-        <label for="ports">Ports:</label>
-        <input type="text" id="ports" name="ports" required>
-        <button type="submit">Scanner</button>
-    </form>
-    <div id="results"></div>
+    <div class="container">
+        <h1 class="text-center">Audit Informatique</h1>
+        <form id="scan-form">
+            <div class="form-group">
+                <label for="ip_range">Plage IP:</label>
+                <input type="text" class="form-control" id="ip_range" name="ip_range" required>
+            </div>
+            <div class="form-group">
+                <label for="ports">Ports:</label>
+                <input type="text" class="form-control" id="ports" name="ports" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Scanner</button>
+        </form>
+        <div id="results" class="mt-5"></div>
+    </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         document.getElementById('scan-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -36,10 +51,15 @@
                 resultsDiv.innerHTML = '';
                 data.forEach(host => {
                     let hostDiv = document.createElement('div');
-                    hostDiv.innerHTML = `<h3>${host.host} (${host.hostname}) - ${host.state}</h3>`;
-                    host.ports.forEach(port => {
-                        hostDiv.innerHTML += `<p>Port: ${port.port} - ${port.state}</p>`;
-                    });
+                    hostDiv.classList.add('card', 'mb-3');
+                    hostDiv.innerHTML = `
+                        <div class="card-body">
+                            <h5 class="card-title">${host.host} (${host.hostname}) - ${host.state}</h5>
+                            <p class="card-text">
+                                ${host.ports.map(port => `Port: ${port.port} - ${port.state}`).join('<br>')}
+                            </p>
+                        </div>
+                    `;
                     resultsDiv.appendChild(hostDiv);
                 });
             });
