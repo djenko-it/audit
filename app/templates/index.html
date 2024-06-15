@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Informatique</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Audit Informatique</h1>
+    <form id="scan-form">
+        <label for="ip_range">Plage IP:</label>
+        <input type="text" id="ip_range" name="ip_range" required>
+        <label for="ports">Ports:</label>
+        <input type="text" id="ports" name="ports" required>
+        <button type="submit">Scanner</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('scan-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ip_range = document.getElementById('ip_range').value;
+            const ports = document.getElementById('ports').value;
+
+            fetch('/scan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ip_range, ports })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+                data.forEach(host => {
+                    let hostDiv = document.createElement('div');
+                    hostDiv.innerHTML = `<h3>${host.host} (${host.hostname}) - ${host.state}</h3>`;
+                    host.ports.forEach(port => {
+                        hostDiv.innerHTML += `<p>Port: ${port.port} - ${port.state}</p>`;
+                    });
+                    resultsDiv.appendChild(hostDiv);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
