@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, current_app as app
 from .scanner import scan_network
 
 @app.route('/')
